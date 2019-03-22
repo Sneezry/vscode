@@ -183,7 +183,7 @@ export interface MainThreadDocumentContentProvidersShape extends IDisposable {
 }
 
 export interface MainThreadDocumentsShape extends IDisposable {
-	$tryCreateDocument(options?: { language?: string; content?: string; }): Promise<UriComponents>;
+	$tryCreateDocument(options?: { language?: string; content?: string; fileName?: string }): Promise<UriComponents>;
 	$tryOpenDocument(uri: UriComponents): Promise<void>;
 	$trySaveDocument(uri: UriComponents): Promise<boolean>;
 }

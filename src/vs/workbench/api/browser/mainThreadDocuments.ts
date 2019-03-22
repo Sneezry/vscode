@@ -201,8 +201,8 @@ export class MainThreadDocuments implements MainThreadDocumentsShape {
 		});
 	}
 
-	$tryCreateDocument(options?: { language?: string, content?: string }): Promise<URI> {
-		return this._doCreateUntitled(undefined, options ? options.language : undefined, options ? options.content : undefined);
+	$tryCreateDocument(options?: { language?: string, content?: string, fileName?: string }): Promise<URI> {
+		return this._doCreateUntitled(undefined, options ? options.language : undefined, options ? options.content : undefined, options ? options.fileName : undefined);
 	}
 
 	private _handleAsResourceInput(uri: URI): Promise<boolean> {
@@ -223,12 +223,13 @@ export class MainThreadDocuments implements MainThreadDocumentsShape {
 		});
 	}
 
-	private _doCreateUntitled(resource?: URI, modeId?: string, initialValue?: string): Promise<URI> {
+	private _doCreateUntitled(resource?: URI, modeId?: string, initialValue?: string, fileName?: string): Promise<URI> {
 		return this._untitledEditorService.loadOrCreate({
 			resource,
 			modeId,
 			initialValue,
-			useResourcePath: Boolean(resource && resource.path)
+			useResourcePath: Boolean(resource && resource.path),
+			fileName
 		}).then(model => {
 			const resource = model.getResource();
 

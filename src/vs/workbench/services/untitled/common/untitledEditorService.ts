@@ -25,6 +25,7 @@ export interface IModelLoadOrCreateOptions {
 	initialValue?: string;
 	encoding?: string;
 	useResourcePath?: boolean;
+	fileName?: string;
 }
 
 export interface IUntitledEditorService {
@@ -183,10 +184,10 @@ export class UntitledEditorService extends Disposable implements IUntitledEditor
 	}
 
 	loadOrCreate(options: IModelLoadOrCreateOptions = Object.create(null)): Promise<UntitledEditorModel> {
-		return this.createOrGet(options.resource, options.modeId, options.initialValue, options.encoding, options.useResourcePath).resolve();
+		return this.createOrGet(options.resource, options.modeId, options.initialValue, options.encoding, options.useResourcePath, options.fileName).resolve();
 	}
 
-	createOrGet(resource?: URI, modeId?: string, initialValue?: string, encoding?: string, hasAssociatedFilePath: boolean = false): UntitledEditorInput {
+	createOrGet(resource?: URI, modeId?: string, initialValue?: string, encoding?: string, hasAssociatedFilePath: boolean = false, fileName?: string): UntitledEditorInput {
 
 		if (resource) {
 			// Massage resource if it comes with a file:// scheme
@@ -206,16 +207,16 @@ export class UntitledEditorService extends Disposable implements IUntitledEditor
 		}
 
 		// Create new otherwise
-		return this.doCreate(resource, hasAssociatedFilePath, modeId, initialValue, encoding);
+		return this.doCreate(resource, hasAssociatedFilePath, modeId, initialValue, encoding, fileName);
 	}
 
-	private doCreate(resource?: URI, hasAssociatedFilePath?: boolean, modeId?: string, initialValue?: string, encoding?: string): UntitledEditorInput {
+	private doCreate(resource?: URI, hasAssociatedFilePath?: boolean, modeId?: string, initialValue?: string, encoding?: string, fileName?: string): UntitledEditorInput {
 		if (!resource) {
 
 			// Create new taking a resource URI that is not already taken
 			let counter = this.mapResourceToInput.size + 1;
 			do {
-				resource = URI.from({ scheme: Schemas.untitled, path: `Untitled-${counter}` });
+				resource = URI.from({ scheme: Schemas.untitled, path: fileName || `Untitled-${counter}` });
 				counter++;
 			} while (this.mapResourceToInput.has(resource));
 		}
